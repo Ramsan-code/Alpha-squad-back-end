@@ -15,6 +15,10 @@ const courseSchema = new mongoose.Schema(
             type: String,
             trim: true
         },
+        thumbnail: {
+            type: String,
+            trim: true
+        },
         teacherId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Teacher',

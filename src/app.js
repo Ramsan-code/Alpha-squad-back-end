@@ -13,7 +13,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
 // Security middleware
 app.use(helmet());
 
-// CORS configuratio
+// CORS configuration
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || ALLOWED_ORIGINS.includes(origin)) {

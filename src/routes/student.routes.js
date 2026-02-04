@@ -17,4 +17,7 @@ router.patch('/:id', auth, studentController.updateStudent);
 // Delete student (admin only)
 router.delete('/:id', auth, requireRole('admin'), studentController.deleteStudent);
 
+// Enrollment
+router.post('/courses/:courseId/enroll', auth, requireRole('student'), studentController.enrollInCourse);
+
 export default router;

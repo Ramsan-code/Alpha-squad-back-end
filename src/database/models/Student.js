@@ -31,8 +31,18 @@ const studentSchema = new mongoose.Schema(
             country: String
         },
         enrolledCourses: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Course'
+            courseId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course'
+            },
+            progress: {
+                type: Number,
+                default: 0
+            },
+            lastAccessed: {
+                type: Date,
+                default: Date.now
+            }
         }],
         status: {
             type: String,

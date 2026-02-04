@@ -211,6 +211,14 @@ export const login = async (req, res) => {
         // Generate token
         const token = generateToken({ userId: user._id, role: user.role });
 
+        // Fetch role-specific profile
+        let profile = null;
+        if (user.role === 'student') {
+            profile = await Student.findOne({ userId: user._id }).populate('enrolledCourses.courseId');
+        } else if (user.role === 'teacher') {
+            profile = await Teacher.findOne({ userId: user._id }).populate('coursesCreated');
+        }
+
         res.status(200).json({
             success: true,
             message: 'Login successful',
@@ -218,8 +226,10 @@ export const login = async (req, res) => {
                 user: {
                     id: user._id,
                     email: user.email,
-                    role: user.role
+                    role: user.role,
+                    name: profile ? `${profile.firstName} ${profile.lastName}`.trim() : user.email.split('@')[0]
                 },
+                profile,
                 token
             }
         });
@@ -243,9 +253,9 @@ export const getMe = async (req, res) => {
 
         // Fetch role-specific profile
         if (user.role === 'student') {
-            profile = await Student.findOne({ userId: user._id });
+            profile = await Student.findOne({ userId: user._id }).populate('enrolledCourses.courseId');
         } else if (user.role === 'teacher') {
-            profile = await Teacher.findOne({ userId: user._id });
+            profile = await Teacher.findOne({ userId: user._id }).populate('coursesCreated');
         }
 
         res.status(200).json({
@@ -255,7 +265,8 @@ export const getMe = async (req, res) => {
                     id: user._id,
                     email: user.email,
                     role: user.role,
-                    isActive: user.isActive
+                    isActive: user.isActive,
+                    name: profile ? `${profile.firstName} ${profile.lastName}`.trim() : user.email.split('@')[0]
                 },
                 profile
             }

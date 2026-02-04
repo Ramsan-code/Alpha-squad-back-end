@@ -34,20 +34,46 @@ export const createCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
     try {
-        const { status } = req.query;
+        const { status, page = 1, limit = 10, search, category, level } = req.query;
         const filter = {};
 
+        // Security: non-admins only see approved courses
         if (!req.user || req.user.role !== 'admin') {
             filter.status = 'approved';
         } else if (status) {
             filter.status = status;
         }
 
-        const courses = await Course.find(filter).populate('teacherId', 'firstName lastName');
+        // Search filter
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Additional filters
+        if (category) filter.category = category;
+        if (level) filter.level = level;
+
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const courses = await Course.find(filter)
+            .populate('teacherId', 'firstName lastName')
+            .skip(skip)
+            .limit(parseInt(limit))
+            .sort({ createdAt: -1 });
+
+        const total = await Course.countDocuments(filter);
 
         res.status(200).json({
             success: true,
-            data: courses
+            data: {
+                courses,
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit)
+            }
         });
     } catch (error) {
         res.status(500).json({
