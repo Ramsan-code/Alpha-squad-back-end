@@ -18,12 +18,18 @@ router.use('/courses', courseRoutes);
 router.use('/transactions', transactionRoutes);
 router.use('/reviews', reviewRoutes);
 
+import mongoose from 'mongoose';
+
 // Health check endpoint
 router.get('/health', (req, res) => {
     res.status(200).json({
         success: true,
         message: 'API is running',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        database: {
+            status: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+            state: mongoose.connection.readyState
+        }
     });
 });
 

@@ -3,6 +3,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import routes from './routes/index.js';
+import connectDB from './database/connection.js';
+
+// Connect to Database
+connectDB();
 
 const app = express();
 const NODE_ENV = process.env.NODE_ENV || 'development';
