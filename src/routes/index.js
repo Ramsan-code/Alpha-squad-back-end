@@ -6,6 +6,7 @@ import teacherRoutes from './teacher.routes.js';
 import courseRoutes from './course.routes.js';
 import transactionRoutes from './transaction.routes.js';
 import reviewRoutes from './review.routes.js';
+import aiRoutes from './ai.routes.js';
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.use('/teachers', teacherRoutes);
 router.use('/courses', courseRoutes);
 router.use('/transactions', transactionRoutes);
 router.use('/reviews', reviewRoutes);
+router.use('/ai', aiRoutes);
 
 import mongoose from 'mongoose';
 
